@@ -1,0 +1,40 @@
+# 编译生成的可执行文件
+*.exe
+*.out
+*.o
+*.obj
+
+# 构建目录
+build/
+output/
+
+# 编译器生成的文件
+*.d
+*.slo
+*.so
+*.dylib
+*.dll
+*.a
+*.lib
+
+# IDE和编辑器文件
+.vscode/
+.vs/
+*.swp
+*.swo
+*~
+.idea/
+
+# 操作系统生成的文件
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# 调试文件
+*.pdb
+*.ilk
+*.log
+
+# 临时文件
+*.tmp
+*.temp
