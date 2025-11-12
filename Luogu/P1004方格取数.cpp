@@ -4,7 +4,8 @@ using namespace std;
 int main() {
     ios::sync_with_stdio(false); // 关闭 cin/cout 与 stdio 的同步，加速输入输出
     cin.tie(nullptr);            // 解除 cin 与 cout 的绑定，加速
-
+    cout.tie(nullptr);           // 解除 cout 与 cin 的绑定，加速
+    
     int N;
     cin >> N;                    // 输入方格大小 N（N×N）
 
