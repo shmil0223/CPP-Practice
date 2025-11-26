@@ -45,3 +45,5 @@ int main(){
     //long 4B
     //unsigned int 4B
     //int 4B
+    //char 1B
+}
