@@ -3,7 +3,7 @@
 // .h结尾的为库文件
 using namespace std;
 //分号结束叫做语句 standard标准 标准命名空间，
-//如果没有这句话，上面那句需要加入iostream.h
+//如果没有这句话，上面那句需要加入iostream.h .h为库文件，里面包含提前写好的函数
 //加注释ctrl+/  
 int main(){
     //int是函数返回值类型，main是函数名
