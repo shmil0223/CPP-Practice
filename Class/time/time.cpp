@@ -6,7 +6,7 @@ using namespace std;
 
 // 带参数的构造函数
 Time::Time(int initHrs, int initMins, int initSecs) : hrs(initHrs), mins(initMins), secs(initSecs) {
-}
+}//初始化列表
 
 // 默认构造函数
 Time::Time() : hrs(0), mins(0), secs(0) {
