@@ -1,0 +1,11 @@
+ios::sync_with_stdio(0); 
+
+cin.tie(0);
+
+#include<bits/stdc++.h>
+
+#include<bits/stdc++.h>
+
+0：48
+A：65
+a：97
