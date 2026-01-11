@@ -23,7 +23,7 @@
 
 1. **单** (单目)：`!`、`++`、`--`、`*`(取值)、`&`(取址)
 
-   （同一级别：右边的先算）
+   （同一级别：右边的先算）++和--优先级别更高
 
 2. **算** (算术)：`*`、`/`、`%`、`+`、`-`
 
@@ -56,10 +56,24 @@
      - **D**: `q-p`。指针相减，表示元素个数差。`&a[5] - &a[0] = 5`。值为 5。
      - 题目问**不等于 5** 的，故选 A。
 
+6. 题目：
+
+   ![76809744066](C:\Users\Lenovo\Desktop\CPP-Practice\Final_test\1768097440667.png)
+
+   选B
+
+   | 写法     | 含义                                                 |
+   | -------- | ---------------------------------------------------- |
+   | `*(p++)` | 先用旧 p，再 p++，等价于`*p++`,运算逻辑`++`优先于`*` |
+   | `(*p)++` | p 不动，值加 1                                       |
+   | `*++p`   | p++ 后，再取值                                       |
+
+7. ​
+
 ## 4 命名规则
 
 1. 只能由 **字母（A–Z a–z）、数字（0–9）、下划线 _** 组成
-2. **不能以数字开头**
+2. **不能以数字开头**，可以以下划线开头
 3. 不能使用 C++ 关键字
 
 ## 5 函数参数带初值
@@ -77,6 +91,40 @@
 |    `const int* p`    |    ✅ 可以    |     ❌ 不可以     |
 |    `int* const p`    |   ❌ 不可以   |      ✅ 可以      |
 | `const int* const p` |   ❌ 不可以   |     ❌ 不可以     |
+
+![76801165772](C:\Users\Lenovo\Desktop\CPP-Practice\Final_test\1768011657721.png)
+
+#### A. `cout << p++;`
+
+- `p++` 是 **指针自增**（地址变化）
+- 并没有通过 `p` 修改它指向的值
+- **完全合法**
+
+✅ 合法
+
+------
+
+#### B. `cout << (*p)++;`
+
+- `(*p)++` 等价于：修改 `*p`
+- 但 `*p` 的类型是 `const int`
+- **不能对 const 对象做自增**
+
+❌ **非法**
+
+这是本题的关键点。
+
+------
+
+#### C. `cout << ++a;`
+
+- `a` 本身是普通 `int`
+- 并没有通过 `p` 修改
+- `const int *p` **不影响 a 自身是否可修改**
+
+✅ 合法
+
+
 
 ## 7 数组指针和指针数组
 
@@ -574,7 +622,9 @@ char city[ ] =  "Dallas";
 以'\0‘结尾
 ```
 
-------
+![76809679245](C:\Users\Lenovo\Desktop\CPP-Practice\Final_test\1768096792457.png)
+
+选A
 
 ### （2）两种常见写法
 
@@ -807,6 +857,23 @@ for (int i = 0; i < 8; i++) {
     }
 ```
 
+```C++
+void bubbleSort(int arr[], int n) {
+    bool swapped;
+    for (int i = 0; i < n - 1; i++) {
+        swapped = false;
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                swap(arr[j], arr[j + 1]);
+                swapped = true; // 发生交换
+            }
+        }
+        // 如果一趟比较下来没有发生交换，说明已经有序，直接退出
+        if (!swapped) break; 
+    }
+}
+```
+
 
 
 ## 19 switch语句
@@ -879,7 +946,7 @@ int main() {
 
 Creating,Compiling, linking ,running
 
-## 21 所占字节
+## 21 所占字节及表示数的范围大小
 
 | 类型                  | 占用字节数                                      | 说明       |
 | --------------------- | ----------------------------------------------- | ---------- |
@@ -892,6 +959,10 @@ Creating,Compiling, linking ,running
 | `char`                | **1 Byte**                                      |            |
 
 **1 字节 = 8 位（bit）**
+
+![76801083919](C:\Users\Lenovo\Desktop\CPP-Practice\Final_test\1768010839192.png)
+
+
 
 ## 22 区分do-while与while循环
 
@@ -963,7 +1034,7 @@ int *p = x;
 
 ### （2）指针访问二维数组
 
-```
+```C++ 
 int a[3][4] = {
   {1,2,3,4},
   {5,6,7,8},
@@ -1051,6 +1122,75 @@ p[i][j] == *(p[i] + j)
 
 - `p[i][j]` 已经解引用两次了
 - 再写 `*p[i][j]` 就“多解了一次”
+
+### (4)例题
+
+```
+string a[2][4] = {
+  "Tian ", "landed on ", "Ren ", "Wen ",
+  "has ",  "Hao ",       "love ", "Mars."
+};
+```
+
+1）`cout << a[0][0] << a[0][3];`
+
+直接按下标取：
+
+- `a[0][0]` = `"Tian "`
+- `a[0][3]` = `"Wen "`
+
+输出：`Tian Wen`
+
+------
+
+2）`cout << *(a[1] + 1) << *(a[1]);`
+
+关键点：`a[1]` 是第 2 行（类型是 `string[4]`），放到表达式里会**退化为指向首元素的指针**：
+
+- `a[1]` 退化为 `&a[1][0]`（指向 `"has "`）
+
+于是：
+
+- `a[1] + 1` 就是 `&a[1][1]`
+- `*(a[1] + 1)` = `a[1][1]` = `"Hao "`
+- `*(a[1])` = `a[1][0]` = `"has "`
+
+这一句输出：`Hao has`
+
+------
+
+3）`cout << *(*a + 1) << *(*(a + 1) + 3);`
+
+这里最容易绕，分两段看。
+
+3.1）`*(*a + 1)`
+
+- `a` 在表达式中退化为：指向“第 0 行”的指针
+  类型：`string (*)[4]`
+- `*a` 表示“第 0 行”本身（类型 `string[4]`）
+- `*a` 放到表达式里又会退化为 `&a[0][0]`
+- 所以 `*a + 1` = `&a[0][1]`
+- `*(*a + 1)` = `a[0][1]` = `"landed on "`
+
+3.2）`*(*(a + 1) + 3)`
+
+- `a + 1` 指向第 1 行（也就是 `&a[1]`）
+- `*(a + 1)` 是第 1 行（类型 `string[4]`）
+- `*(a + 1)` 在表达式中退化为 `&a[1][0]`
+- `*(a + 1) + 3` = `&a[1][3]`
+- `*(*(a + 1) + 3)` = `a[1][3]` = `"Mars."`
+
+这一句输出：`landed on Mars.`
+
+**最终输出：**
+
+```C++
+Tian Wen Hao has landed on Mars.
+```
+
+- `a` → 指向“行”的指针
+- `a[i]` → 第 i 行，进一步在表达式里会变成 `&a[i][0]`
+- `*a` → 第 0 行，进一步在表达式里会变成 `&a[0][0]`
 
 ## 26 动态内存管理
 
@@ -1187,6 +1327,12 @@ p[i][j] == *(p[i] + j)
 
 默认参数
 
+![76801444246](C:\Users\Lenovo\Desktop\CPP-Practice\Final_test\1768014442466.png)
+
+![76801446025](C:\Users\Lenovo\Desktop\CPP-Practice\Final_test\1768014460257.png)
+
+14 2,8 2,16 0,0 2
+
 ### 函数返回类型方式
 
 传值、传址、传引用
@@ -1307,9 +1453,106 @@ int main() {
 输入：
 3
 10 20 30
-
 输出：
 10 20 30
+```
+
+### 程序四：
+
+![76809917420](C:\Users\Lenovo\Desktop\CPP-Practice\Final_test\1768099174205.png)
+
+https://gemini.google.com/share/4a546c0f711a
+
+1️⃣ 第一次调用
+
+```
+func(8, 4)
+```
+
+- `n = 4 ≥ 2`
+- 输出：
+
+```
+8 4
+```
+
+- 递归：
+
+```
+func(7,2) + func(6,3)
+```
+
+------
+
+2️⃣ 计算 `func(7,2)`
+
+- `n = 2 ≥ 2`
+- 输出：
+
+```
+7 2
+```
+
+- 递归：
+
+```
+func(6,0) + func(5,1)
+```
+
+- 两个都是 `n=0 / 1` → **都返回 1，不输出**
+
+👉 `func(7,2) = 1 + 1 = 2`
+
+------
+
+3️⃣ 计算 `func(6,3)`
+
+- `n = 3 ≥ 2`
+- 输出：
+
+```
+6 3
+```
+
+- 递归：
+
+```
+func(5,1) + func(4,2)
+```
+
+`func(5,1)`
+
+- `n = 1` → 返回 1，不输出
+
+`func(4,2)`
+
+- `n = 2 ≥ 2`
+- 输出：
+
+```
+4 2
+```
+
+- 递归：
+
+```
+func(3,0) + func(2,1)
+```
+
+- 都返回 1
+
+👉 `func(4,2) = 2`
+
+👉 `func(6,3) = 1 + 2 = 3`
+
+------
+
+## 三、最终返回值
+
+```
+func(8,4) = func(7,2) + func(6,3)
+          = 2 + 3
+          = 5
 ```
 
 ## 29 结构体 VS 联合体
@@ -1418,39 +1661,465 @@ public:
 ### 抽象类和纯虚函数举例
 
 ```C++
-#include <iostream>
-using namespace std;
-class CFigure {
+#include <iostream>
+using namespace std;
+class CFigure {
 public:
-    virtual double getArea() = 0; // 纯虚函数
+    virtual double getArea() = 0; // 纯虚函数
+    virtual ~CFigure() {} // 虚析构函数
 };
     
-class CCircle : public CFigure {
+class CCircle : public CFigure {
 private:
-    double radius;
+    double radius;
 public:
-    CCircle(double r) : radius(r) {}
-    double getArea( ) override { return 3.14 * radius * radius; }
+    CCircle(double r) : radius(r)  {}
+    double getArea( ) override { return 3.14 * radius * radius; }
+    ~CCircle() override {}
 };
 
-class CRectangle : public CFigure {
+class CRectangle : public CFigure {
 private:
-     double height, width;
+     double height, width;
 public:
-     CRectangle(double h, double w) : height(h), width(w) { }
-     double getArea() override { return height * width; }
+    CRectangle(double h, double w) : height(h), width(w) { }
+    double getArea() override { return height * width; }
+    ~CRectangle() override {}
 };
-//最好加上虚析构
-int main() {
-    CFigure* figure1 = new CRectangle(4.0, 5.0);
-    cout << "矩形面积: " << figure1->getArea() << endl;
-    delete figure1;
+
+int main() {
+    CFigure* figure1 = new CRectangle(4.0, 5.0);
+    cout << "矩形面积: " << figure1->getArea() << endl;
+    delete figure1;
     
-    CFigure* figure2 = new CCircle(4.0);
-    cout << "圆形面积: " << figure2->getArea() << endl;
-    delete figure2;
+    CFigure* figure2 = new CCircle(4.0);
+    cout << "圆形面积: " << figure2->getArea() << endl;
+    delete figure2;
     
-    return 0;
+    return 0;
 }
 ```
 
+## 31 while与后置自增
+
+问：循环几次
+
+```C++
+int i = 1;
+
+while (i++ <= 28) {
+    cout << "hello";
+    if (i % 2 == 0 || i % 3 == 0)
+        i *= 2;
+}
+```
+
+**两个核心点一定要记住：**
+
+1. `i++ <= 28` 是**后置自增**
+   - 判断时用的是 **旧值 i**
+   - 判断结束后，**i 先自增 1**
+2. `if` 中可能会让 `i` **直接翻倍**
+
+#### 第 1 次循环
+
+- 初始：`i = 1`
+- 判断：`1 <= 28` ✅
+- 判断后：`i++ → i = 2`
+- 打印：hello（第 1 次）
+- `i = 2`，满足 `i % 2 == 0` → `i *= 2 → i = 4`
+
+------
+
+#### 第 2 次循环
+
+- 判断：`4 <= 28` ✅
+- 判断后：`i++ → i = 5`
+- 打印：hello（第 2 次）
+- `i = 5`
+  - 不被 2 整除，不被 3 整除→ 不翻倍
+
+------
+
+#### 第 3 次循环
+
+- 判断：`5 <= 28` ✅
+- 判断后：`i++ → i = 6`
+- 打印：hello（第 3 次）
+- `i = 6`，被 2 或 3 整除→ `i *= 2 → i = 12`
+
+------
+
+#### 第 4 次循环
+
+- 判断：`12 <= 28` ✅
+- 判断后：`i++ → i = 13`
+- 打印：hello（第 4 次）
+- `i = 13`→ 不翻倍
+
+------
+
+#### 第 5 次循环
+
+- 判断：`13 <= 28` ✅
+- 判断后：`i++ → i = 14`
+- 打印：hello（第 5 次）
+- `i = 14`，被 2 整除→ `i *= 2 → i = 28`
+
+------
+
+#### 第 6 次循环
+
+- 判断：`28 <= 28` ✅
+- 判断后：`i++ → i = 29`
+- 打印：hello（第 6 次）
+- `i = 29`→ 不翻倍
+
+------
+
+#### 第 7 次循环（结束）
+
+- 判断：`29 <= 28` ❌
+- 循环结束
+
+#### 易错点总结
+
+- `i++ <= 28`
+  ❌ 不是“先加再判断”
+  ✅ 是“**先判断旧值，再自增**”
+- 这种题 **必须手算轨迹**，不能凭感觉
+
+## 32 class 与 private的默认访问权限
+
+|  关键字  | 默认访问权限 |
+| :------: | :----------: |
+| `class`  |  `private`   |
+| `struct` |   `public`   |
+
+## 33 函数声明与函数定义
+
+![76801248494](C:\Users\Lenovo\Desktop\CPP-Practice\Final_test\1768012484946.png)
+
+正确答案：**A**
+
+**解析：**
+在 C++ 中，**函数原型（function prototype）是“声明（declaration），但不是定义（definition）”**。
+
+- **函数声明**：告诉编译器函数的**返回类型、函数名和参数列表**，但不包含函数体。
+  例如：
+
+  ```C++
+  int add(int a, int b);
+  ```
+
+- **函数定义**：不仅包含声明信息，还**包含函数体（实现）**。
+
+  ```C++
+  int add(int a, int b) {
+      return a + b;
+  }
+  ```
+
+函数原型只起到“提前告诉编译器函数长什么样”的作用，使得函数可以在定义之前被调用，但它**不分配代码、不实现功能**，因此不是定义。
+
+## 34 cout << cstr1 ???
+
+![76801329999](C:\Users\Lenovo\Desktop\CPP-Practice\Final_test\1768013299993.png)
+
+```C++ 
+cout << cstr1 << ',' << cstr1[1] << ',' << *(cstr1+4) << ',';
+```
+
+| 表达式       | 含义         | 输出    |
+| ------------ | ------------ | ------- |
+| `cstr1`      | C 风格字符串 | `Hello` |
+| `cstr1[1]`   | 第二个字符   | `e`     |
+| `*(cstr1+4)` | 第 5 个字符  | `o`     |
+
+答案： Hello,e,o,C+2
+
+## 35 delete的使用
+
+|  申请方式  |   释放方式   |
+| :--------: | :----------: |
+|  `new T`   |  `delete p`  |
+| `new T[n]` | `delete[] p` |
+
+## 36 一道程序填空题
+
+```C++
+#include <iostream>
+using namespace std;
+
+class StackOfInteger {
+public:
+    StackOfInteger(int capacity) {
+        this->capacity = capacity;   
+        // 【填空1】构造函数参数 capacity 与成员变量 capacity 同名
+        // 必须用 this->capacity 才能给“成员变量”赋值
+
+        size = 0;
+        s = new int[capacity];
+    }
+
+    ~StackOfInteger();                
+    // 【填空2】这里只能写析构函数声明
+    // 定义必须放在类外，否则与题目结构不一致
+
+    int top() {
+        if (size) return s[size - 1]; 
+        // 【填空3】题目说明：最后一个元素存放在 s[size-1]
+        // top() 返回栈顶元素但不删除
+
+        else return -1;
+    }
+
+    void pop() { size--; }            
+    // 【填空4】pop 的含义是“删除栈顶元素”
+    // 栈顶元素在 s[size-1]，删除只需 size--，不需要 delete
+
+    void push(int value) {
+        if (size == capacity) {
+            int* tmpS = new int[capacity * 2];
+            for (int i = 0; i < size; i++)
+                tmpS[i] = s[i];
+
+            delete[] s;               
+            // 【填空5】s 是用 new[] 申请的数组
+            // 必须用 delete[] 释放旧空间，否则内存泄漏
+
+            s = tmpS;
+            capacity *= 2;            
+            // 【填空6】扩容规则：容量变为原来的 2 倍
+            // 只改 capacity，不影响已有 size
+        }
+        s[size++] = value;            
+        // 【填空7】新元素放在 s[size]
+        // 然后 size 自增，符合“后进先出”栈结构
+    }
+
+    void print() {
+        cout << "capacity: " << capacity << ", size: " << size << "\n";
+        for (int i = 0; i < size; i++)
+            cout << s[i] << ' ';
+        cout << "\n";
+    }
+
+    int* s;
+    int capacity, size;
+};
+
+StackOfInteger::~StackOfInteger() {    
+    delete[] s;
+    // 【填空5（析构）】对象销毁时释放动态数组
+    // 与构造函数中的 new[] 必须一一对应
+}
+
+int main() {
+    StackOfInteger ss(4);              
+    // 【填空8】定义对象 ss，调用带 int 参数的构造函数
+    // 不能写成 StackOfInteger(4); 否则是临时对象
+
+    for (int i = 1; i < 5; i++)
+        ss.push(i);
+
+    ss.print();
+
+    ss.push(16);
+    ss.print();
+
+    ss.push(7);
+    ss.pop();
+    ss.print();
+
+    return 0;
+}
+
+```
+
+## 37 十六进制和八进制
+
+![76809787835](C:\Users\Lenovo\Desktop\CPP-Practice\Final_test\1768097878352.png)
+
+这道题考的是 **C/C++ 常量的表示是否合法**。
+
+- **A. -0.35e-50**
+  👉 科学计数法表示的浮点常量，合法。
+- **B. 0x87AB**
+  👉 十六进制整型常量（`0x` 开头，后面是 0–9、A–F），合法。
+- **C. 059**
+  👉 **不合法**。
+  以 `0` 开头的整数常量表示 **八进制数**，而八进制只允许数字 **0–7**，
+  其中的 `9` 超出了八进制范围，因此是错误的常量表示。
+- **D. "abcd"**
+  👉 字符串常量，合法。
+
+## 38 return 语句
+
+![76809806980](C:\Users\Lenovo\Desktop\CPP-Practice\Final_test\1768098069806.png)
+
+- **A. 必须返回一个值 ❌**
+  不一定。
+
+  - `void` 函数可以写 `return;`，不返回任何值
+
+  - ```C++
+    void f(int x) {
+        if (x < 0)
+            return;   // 直接结束函数
+        cout << x << endl;
+    }
+    ```
+
+
+  - 甚至可以不写 `return`
+
+- **B. 可以返回多个值 ❌**
+  `return` 一次只能返回 **一个表达式的值**
+  （多个值通常通过结构体、引用、指针、全局变量等方式实现，不是 `return` 本身的能力）
+
+- **C. 可以多次出现 ✅（正确）**
+  一个函数体中 **可以有多个 return 语句**，常用于：
+
+  ```C++
+  int f(int x) {
+      if (x < 0) return -1;
+      if (x == 0) return 0;
+      return 1;
+  }
+  ```
+
+  但**实际执行时只会执行其中一条**
+
+- **D. 只能出现一次 ❌** 语法上没有这种限制
+
+> `return` 语句在函数体中**可以写多次，但一次调用只会执行一条**。
+
+## 39 cout
+
+![76809828940](C:\Users\Lenovo\Desktop\CPP-Practice\Final_test\1768098289407.png)
+
+输出语句 `cout << "C++" << endl;` 中的 **cout** 为（ ）。
+
+**正确答案：B．对象名**
+
+**解释：**
+
+- `cout` 是 C++ 标准库 `<iostream>` 中定义的**输出流对象**
+- 它的类型是 `ostream`，是一个**已经定义好的全局对象**
+- 不是函数（不能 `cout()` 调用）
+- 不是变量名（不是用户自定义的普通变量）
+- 也不是 C++ 关键字（关键字如 `int`、`return`、`if`）
+
+可以这样理解：
+
+```C++ 
+ostream cout;   // （概念理解，实际由标准库完成）
+```
+
+所以 **cout 本质上是一个对象名**，用于向标准输出设备（通常是屏幕）输出内容。
+
+## 40 程序控制三种基本结构
+
+![76809855862](C:\Users\Lenovo\Desktop\CPP-Practice\Final_test\1768098558626.png)
+
+分支，循环和顺序
+
+## 41 普通局部变量 vs `static` 局部变量
+
+![76810224504](C:\Users\Lenovo\Desktop\CPP-Practice\Final_test\1768102245041.png)
+
+
+
+#### 1️⃣ 普通局部变量
+
+```
+int s = 0;
+```
+
+特点只有一句话：
+
+> **函数每调用一次，就新建一次变量，用完就销毁**
+
+也就是说：
+
+- 进入函数 → 分配栈空间
+- 离开函数 → 栈空间释放
+- 下次再进来 → 完全是一个“新变量”
+
+所以它**每次都会重新变成 0**。
+
+------
+
+#### 2️⃣ `static` 局部变量
+
+```
+static int s = 0;
+```
+
+它有三个**非常关键**的性质：
+
+##### ✅ ① 只初始化一次（这是最核心的）
+
+- 程序**第一次执行到这一行**时初始化
+- 以后再调用这个函数，**不会再执行初始化**
+
+> 注意：
+> **不是“每次进函数初始化”**
+> 而是：**整个程序运行期间只初始化一次**
+
+------
+
+##### ✅ ② 生命周期 = 整个程序运行期间
+
+- 普通局部变量：活在栈上
+- `static` 局部变量：活在**静态存储区**
+
+也就是说：
+
+- 函数结束了，它**还活着**
+- 下次再调用，直接接着用
+
+------
+
+##### ✅ ③ 作用域仍然是“函数内部”
+
+- 外面访问不到
+- 但**值会被记住**
+
+> 👉 这就是它“又像局部变量，又像全局变量”的地方
+
+```C++ 
+int sum(int p[], int n)
+{
+    static int s = 0;
+    for(int i=0;i<n;i++)
+        s += p[i];
+    return s;
+}
+```
+
+> **sum 被调用了 4 次，但 s 只创建了一次**
+
+所以流程是：
+
+```
+第一次调用：s 从 0 开始
+第二次调用：s 从“上一次的结果”开始
+第三次调用：继续累加
+第四次调用：继续累加
+```
+
+这就是为什么你看到的是：
+
+```
+3
+15
+28
+45
+```
+
+而不是“每一行单独的和”。
+
+> `static` 局部变量
+> **只初始化一次，生命周期贯穿整个程序，函数多次调用时值会被保留**
