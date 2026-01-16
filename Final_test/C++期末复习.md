@@ -1669,7 +1669,7 @@ using namespace std;
 class CFigure {
 public:
     virtual double getArea() = 0; // 纯虚函数
-    virtual ~CFigure() {} // 虚析构函数
+    virtual ~CFigure() = default; // 虚析构函数
 };
     
 class CCircle : public CFigure {
@@ -2252,7 +2252,7 @@ Derived::f(); // 调用 Derived 重新定义的版本
 原因简算一下类型和偏移：
 
 - `int a[5][5];`
-- `int *p1 = a[0];` p1` 指向 `a[0][0]`，按一维连续内存线性走。
+- `int *p1 = a[0];` p1` 指向 `a[0][0]` ，按一维连续内存线性走。
 - `int (*p2)[5] = a + 1;`
   `p2` 指向 **第 1 行**（`a[1]`），每次 `p2 + 1` 跳一整行（5 个 int）。
 
@@ -2686,4 +2686,3 @@ B(int n, int m) : A(m)
 
 因此 `ptr2.show()` 调用的是 `B::show()`😂
 
-69
